@@ -1,9 +1,9 @@
 """Train the FARE model by using the given python class instead of the script."""
 
-from backend.models.WFAREMul import WFAREMul
+from models.WFAREMul import WFAREMul
 
-from backend.models.utils.net import Net
-from backend.models.utils.functions import fare_actions_factory
+from models.utils.net import Net
+from models.utils.functions import fare_actions_factory
 
 import torch
 
@@ -39,10 +39,10 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    train_data_path = f"backend/models/{args.dataset}/train_data_{args.dataset}.csv"
-    test_data_path = f"backend/models/{args.dataset}/test_data_{args.dataset}.csv"
-    blackbox_model_path = f"backend/models/{args.dataset}/model_{args.model}_{args.dataset}.pth"
-    preprocessor_path = f"backend/models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth"
+    train_data_path = f"models/{args.dataset}/train_data_{args.dataset}.csv"
+    test_data_path = f"models/{args.dataset}/test_data_{args.dataset}.csv"
+    blackbox_model_path = f"models/{args.dataset}/model_{args.model}_{args.dataset}.pth"
+    preprocessor_path = f"models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth"
 
     # Read data and preprocess them
     X_train = pd.read_csv(train_data_path)
@@ -69,14 +69,14 @@ if __name__ == "__main__":
     W_test = pd.DataFrame(W_test, columns=keys_weights)
 
     # Save weights to disk
-    W_test.to_csv(f"backend/models/{args.dataset}/weights_test_{args.dataset}.csv", index=None)
+    W_test.to_csv(f"models/{args.dataset}/weights_test_{args.dataset}.csv", index=None)
 
     # Build a preprocessing pipeline, which can be used to preprocess
     # the elements of the dataset.
     # The Fast preprocessor does min/max scaling and categorical encoding.
     # It is much faster than then scikit learn ones and it uses dictionaries
     # and sets to perform operations on the fly.
-    preprocessor = pickle.load(open(f"backend/models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth", "rb"))
+    preprocessor = pickle.load(open(f"models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth", "rb"))
 
     blackbox_model = Net(len(preprocessor.transform(X_train)[0]),
                             layers=NN_CONFIG.get(args.dataset).get("nn").get("layers"))
@@ -132,22 +132,22 @@ if __name__ == "__main__":
     # Train a FARE model given the previous configurations
     if args.retrain:
         
-        if not args.clean and os.path.isfile(f"backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth"):
+        if not args.clean and os.path.isfile(f"models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth"):
             print("[*] Loading checkpoint from file")
-            model.load(f"backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
+            model.load(f"models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
         
         model.fit(X_train, W_train, X_hard=X_hard, W_hard=W_hard,
                   max_iter=WFARE_CONFIG.get(args.dataset).get("training_steps"), 
                   tensorboard="./wfare")
         
         # We save the trained WFARE model to disc
-        model.save(f"backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
-        pickle.dump(model, open(f"backend/models/{args.dataset}/wfare_recourse_{args.model}_{args.dataset}.pth", "wb"))
+        model.save(f"models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
+        pickle.dump(model, open(f"models/{args.dataset}/wfare_recourse_{args.model}_{args.dataset}.pth", "wb"))
     else:
-        if os.path.isfile(f"backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth"):
-            model.load(f"backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
+        if os.path.isfile(f"models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth"):
+            model.load(f"models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth")
         else:
-            print(f"No model available (backend/models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth)!")
+            print(f"No model available (models/{args.dataset}/wfare_{args.model}_{args.dataset}.pth)!")
             exit()
 
     # For testing, we use the test data

@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 
 def fix_lendingclub(data, y):
 
-    columns = pd.read_csv("backend/models/lendingclub/raw/columns.csv")["name"]
+    columns = pd.read_csv("models/lendingclub/raw/columns.csv")["name"]
     data = data[columns]
 
     # Drop the columns if they have more tha 80% nans

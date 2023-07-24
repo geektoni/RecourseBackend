@@ -16,8 +16,8 @@ import dill as pickle
 
 import torch
 
-from backend.models.utils.trainer_torch import train_nn
-from backend.models.config import NN_CONFIG, DATA_CONFIG
+from models.utils.trainer_torch import train_nn
+from models.config import NN_CONFIG, DATA_CONFIG
 
 if __name__ == "__main__":
 
@@ -67,8 +67,8 @@ if __name__ == "__main__":
     y_test.reset_index(drop=True, inplace=True)
 
     # Save the training/testing datasets
-    X_train.to_csv(f"backend/models/{args.dataset}/train_data_{args.dataset}.csv", index=None)
-    X_test.to_csv(f"backend/models/{args.dataset}/test_data_{args.dataset}.csv", index=None)
+    X_train.to_csv(f"models/{args.dataset}/train_data_{args.dataset}.csv", index=None)
+    X_test.to_csv(f"models/{args.dataset}/test_data_{args.dataset}.csv", index=None)
 
     # Train the preprocessor
     preprocessor = StandardPreprocessor()
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 
     # Save the best estimator to disk
     torch.save(best_model.state_dict(),
-                f"backend/models/{args.dataset}/model_{args.model}_{args.dataset}.pth")
+                f"models/{args.dataset}/model_{args.model}_{args.dataset}.pth")
     
     # Save the preprocessor to disk
-    with open(f"backend/models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth", "wb") as p:
+    with open(f"models/{args.dataset}/preprocessor_{args.model}_{args.dataset}.pth", "wb") as p:
         pickle.dump(preprocessor, p)

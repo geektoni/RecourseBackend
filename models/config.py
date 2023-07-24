@@ -1,11 +1,11 @@
-from backend.models.utils.dataloader import fix_lendingclub
+from models.utils.dataloader import fix_lendingclub
 
 import numpy as np
 
 # Dataset specific configurations
 DATA_CONFIG = {
     "adult": {
-        "dataset": "backend/models/adult/raw/data.csv",
+        "dataset": "models/adult/raw/data.csv",
         "target": "income_target",
         "target_negative": "<=50K",
         "drop": ["fnlwgt", "education_num", "predicted"],
@@ -13,7 +13,7 @@ DATA_CONFIG = {
         "preprocessing": None
     },
     "lendingclub": {
-        "dataset": "backend/models/lendingclub/raw/loan_status_2007_2020_Q3_small.csv",
+        "dataset": "models/lendingclub/raw/loan_status_2007_2020_Q3_small.csv",
         "target": "loan_status",
         "target_negative": "Charged Off",
         "drop": [],
@@ -52,7 +52,7 @@ MIXTURE_MEAN_LIST = {
 
 WFARE_CONFIG = {
     "adult": {
-        "environment": "backend.models.adult.environment.AdultEnvironment",
+        "environment": "models.adult.environment.AdultEnvironment",
         "training_steps": 500,
         "batch_size": 50,
         "buffer_size": 200,
@@ -70,7 +70,7 @@ WFARE_CONFIG = {
         }
     },
     "lendingclub": {
-        "environment": "backend.models.lendingclub.environment.LendingClubEnvironment",
+        "environment": "models.lendingclub.environment.LendingClubEnvironment",
         "training_steps": 200,
         "batch_size": 50,
         "buffer_size": 200,

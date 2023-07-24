@@ -1,7 +1,7 @@
 from recourse_fare.models.WFARE import WFARE
 from recourse_fare.utils.functions import import_dyn_class, get_cost_from_tree, get_trace
 
-from backend.models.MCTSMul import MCTSMul
+from models.MCTSMul import MCTSMul
 
 import pandas as pd
 from tqdm import tqdm

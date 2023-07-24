@@ -30,13 +30,13 @@ dataset_models = [
 ]
 
 dataset_paths = [
-    "backend/models/adult/test_data_adult.csv",
-    "backend/models/lendingclub/test_data_lendingclub.csv"
+    "models/adult/test_data_adult.csv",
+    "models/lendingclub/test_data_lendingclub.csv"
 ]
 
 recourse_paths = [
-    ["adult", "backend/models/adult/wfare_recourse_nn_adult.pth"],
-    ["lendingclub", "backend/models/lendingclub/wfare_recourse_nn_lendingclub.pth"]
+    ["adult", "models/adult/wfare_recourse_nn_adult.pth"],
+    ["lendingclub", "models/lendingclub/wfare_recourse_nn_lendingclub.pth"]
 ]
 
 # Load the models for the ensemble
@@ -49,10 +49,10 @@ for dataset, model, feat_size in dataset_models:
 
     # Load the neural network
     mdl = Net(feat_size, NN_CONFIG.get(dataset).get(model).get("layers", 0))
-    mdl.load_state_dict(torch.load(f"backend/models/{dataset}/model_{model}_{dataset}.pth"))
+    mdl.load_state_dict(torch.load(f"models/{dataset}/model_{model}_{dataset}.pth"))
 
     # Load the preprocessors
-    mdl_preprocessors = pickle.load(open(f"backend/models/{dataset}/preprocessor_{model}_{dataset}.pth", "rb"))
+    mdl_preprocessors = pickle.load(open(f"models/{dataset}/preprocessor_{model}_{dataset}.pth", "rb"))
 
     ensemble_names.append(dataset)
     ensemble_models.append(mdl)
