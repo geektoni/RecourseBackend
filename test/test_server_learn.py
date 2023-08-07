@@ -101,21 +101,27 @@ cookies = {'RecourseInteractiveWeights23':
 preferences = {"hour_per_week": {"max_value": 41, "min_value": 0},
                "education": {"acceptable_values": ['Doctorate', 'Assoc-acdm', 'Assoc-voc', 'Prof-school']}}
 
+difficulties = {
+    "adult": {
+        'workclass': 5
+    }
+}
+
 print("[*] POST REQUEST")
 print(pprint.pformat(
-    {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences}
+    {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences, "difficulty": difficulties}
 ))
 print()
 
-# Send the request to the API
-x = requests.post(url, json = {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences}, cookies=cookies)
-
 # Save the dictionary to files
 json.dump(
-    {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences},
+    {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences, "difficulty": difficulties},
     open("request.json", "w"),
     indent=4, separators=(", ", ": "), sort_keys=True
 )
+
+# Send the request to the API
+x = requests.post(url, json = {"features": {"adult": myobj, "lendingclub": myobj_lending}, "preferences": preferences, "difficulty": difficulties}, cookies=cookies)
 
 # Save cookies to file
 json.dump(

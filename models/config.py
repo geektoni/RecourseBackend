@@ -88,7 +88,7 @@ WFARE_CONFIG = {
         }
     },
     "givemecredit": {
-        "environment": "blackbox.givemecredit.givemecredit_env.GiveMeCreditEnv",
+        "environment": "givemecredit.givemecredit_env.GiveMeCreditEnv",
         "training_steps": 600, #1500,
         "batch_size": 50,
         "buffer_size": 200,
@@ -111,7 +111,7 @@ WFARE_CONFIG = {
         }
     },
     "synthetic": {
-        "environment": "blackbox.synthetic.synthetic_env.SyntheticEnv",
+        "environment": "synthetic.synthetic_env.SyntheticEnv",
         "training_steps": 800,
         "batch_size": 50,
         "buffer_size": 200,
