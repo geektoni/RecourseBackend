@@ -86,6 +86,10 @@ environment_configs = {
     k: v.environment_config for k,v in recourse_method.items()
 }
 
+@app.route("/hi")
+def hello_world():
+    return "<p>Hello, World!</p>"
+
 @app.route("/get_user", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_user():
