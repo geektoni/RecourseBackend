@@ -12,7 +12,8 @@ COPY --from=core-lib /recourse-fare ./recourse-fare
 COPY ./requirements.txt ./requirements.txt
 RUN	pip3 install -r requirements.txt && \
 	cd recourse-fare && \
-	pip3 install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu116 -e .
+	#pip3 install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu116 -e .
+	pip3 install --no-cache-dir -e .
 
 COPY . . 
 EXPOSE 5000
