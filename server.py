@@ -1,9 +1,12 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-from flask import request
 
+from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+from pymongo.uri_parser import parse_uri
+from pymongo.pool import PoolOptions
+import json
 import dill as pickle
-
 from recourse_fare.utils.functions import import_dyn_class
 
 from models.config import NN_CONFIG
@@ -15,11 +18,28 @@ from models.dataset import JointDataset
 from models.user.sampler import Sampler
 
 import torch
+import os
 
 import numpy as np
 import pandas as pd 
 
 MAX_RECOURSE_PLANS = 5
+# MongoDB configuration
+MONGO_URI = f"mongodb+srv://{os.environ['MONGO_USERNAME']}:{os.environ['MONGO_PASSWORD']}@recourse.9vzed8f.mongodb.net"
+# MONGO_URI = f"mongodb+srv://{os.environ('MONGO_USERNAME','')}:{os.environ('MONGO_PASSWORD','')}@{os.environ('MONGO_CLUSTER','')}.mongodb.net/{os.environ('MONGO_DBNAME','')}"
+MONGO_OPTIONS = {
+    "maxPoolSize": 10,
+    "minPoolSize": 1,
+    "waitQueueTimeoutMS": 2000,
+    "retryWrites": "true",
+    "w":"majority"
+}
+
+# Initialize MongoDB connection pool
+parsed_uri = parse_uri(MONGO_URI)
+client = MongoClient(host=MONGO_URI, **MONGO_OPTIONS)
+db = client.recourse
+
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -85,6 +105,18 @@ sampler = Sampler(nodes)
 environment_configs = {
     k: v.environment_config for k,v in recourse_method.items()
 }
+
+@app.route('/insert_logs', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def insert_logs():
+    try:
+        data_t = json.loads(request.data)
+        print("recieved data: try updating: ",data_t)
+        collection = db.interaction_logs if os.environ.get('RECOURSE_PROD', '') != '' else db.test
+        inserted = collection.insert_one(data_t)
+        return jsonify({"message": "Data inserted successfully", "inserted_id": str(inserted.inserted_id)})
+    except PyMongoError as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/get_user", methods=['GET'])
 @cross_origin(supports_credentials=True)
