@@ -1,0 +1,10 @@
+Flask>=2.2.5
+flask-cors>=4.0.0
+seaborn>=0.12.2
+
+click
+itsdangerous
+Jinja2
+MarkupSafe
+uWSGI
+Werkzeug
